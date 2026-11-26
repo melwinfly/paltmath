@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Namnlöst dokument - Google Dokument</title>
+    <link id="page-icon" rel="icon" href="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico">
+    <style>
+        :root {
+            --bg-main: #1b2838;
+            --bg-dark: #171a21;
+            --bg-card: #16202d;
+            --bg-hover: #2a475e;
+            --accent: #66c0f4;
+            --accent-green: #5c7e10;
+            --accent-green-hover: #75a114;
+            --text-main: #c7d5e0;
+            --text-bright: #ffffff;
+            --text-muted: #8f98a0;
+            --border: #2a475e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Motiva Sans", Arial, Helvetica, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        /* Top Steam Header */
+        header {
+            background-color: var(--bg-dark);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand { display: flex; align-items: center; gap: 25px; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--text-bright); letter-spacing: 1.5px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--accent); }
+        .nav-tabs { display: flex; gap: 18px; }
+        .nav-tab { color: var(--text-main); font-size: 14px; font-weight: bold; text-transform: uppercase; cursor: pointer; padding: 6px 4px; border-bottom: 3px solid transparent; transition: 0.15s; }
+        .nav-tab:hover, .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        .school-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        select.cloak-select {
+            background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);
+            padding: 6px 10px; border-radius: 3px; font-size: 12px; cursor: pointer; outline: none;
+        }
+        .btn {
+            border: none; padding: 7px 14px; border-radius: 3px; font-size: 12px; font-weight: bold;
+            cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn-blue { background: rgba(102, 192, 244, 0.2); color: var(--accent); border: 1px solid rgba(102, 192, 244, 0.4); }
+        .btn-blue:hover { background: var(--accent); color: #000; }
+        .btn-panic { background: #a32626; color: #fff; }
+        .btn-panic:hover { background: #cc3333; }
+
+        /* Main Container */
+        .container { max-width: 1240px; width: 100%; margin: 25px auto; padding: 0 20px; flex: 1; }
+
+        /* Filter & Search Bar */
+        .toolbar {
+            background: linear-gradient(90deg, #2a475e 0%, #1b2838 100%);
+            padding: 12px 16px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .categories { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cat-btn {
+            background: rgba(0,0,0,0.25); color: var(--text-main); border: none;
+            padding: 6px 12px; border-radius: 3px; font-size: 13px; cursor: pointer; transition: 0.15s;
+        }
+        .cat-btn:hover, .cat-btn.active { background: var(--accent); color: #000; font-weight: bold; }
+        .search-input {
+            background: #316282; border: 1px solid #000; color: #fff; padding: 7px 12px;
+            border-radius: 3px; font-size: 13px; width: 250px; outline: none;
+        }
+        .search-input::placeholder { color: #a4c2d6; }
+
+        /* Game Grid */
+        .section-title { font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-bright); margin-bottom: 14px; display: flex; justify-content: space-between; }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 18px;
+        }
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            transition: transform 0.18s, box-shadow 0.18s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid transparent;
+        }
+        .game-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.6); border-color: var(--accent); }
+        .card-banner {
+            height: 115px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            position: relative;
+        }
+        .fav-star {
+            position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.65);
+            color: #8f98a0; border: none; width: 28px; height: 28px; border-radius: 4px;
+            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .fav-star.active { color: #facc15; }
+        .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-title { font-size: 15px; font-weight: bold; color: var(--text-bright); margin-bottom: 4px; }
+        .card-tag { font-size: 11px; color: var(--accent); background: rgba(102,192,244,0.12); padding: 2px 6px; border-radius: 2px; display: inline-block; margin-bottom: 10px; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+        .play-badge {
+            background: var(--accent-green); color: #d2efa9; padding: 5px 12px;
+            border-radius: 2px; font-size: 12px; font-weight: bold;
+        }
+        .game-card:hover .play-badge { background: var(--accent-green-hover); color: #fff; }
+        .server-count { font-size: 11px; color: var(--text-muted); }
+
+        /* Player View */
+        #player-view { display: none; flex-direction: column; gap: 12px; }
+        .player-header {
+            background: var(--bg-card); padding: 12px 16px; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .server-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .srv-btn {
+            background: #2a475e; color: var(--text-main); border: 1px solid transparent;
+            padding: 6px 12px; border-radius: 3px; font-size: 12px; cursor: pointer;
+        }
+        .srv-btn.active { background: var(--accent); color: #000; font-weight: bold; }
+        .iframe-wrapper {
+            width: 100%; height: 74vh; background: #000; border-radius: 4px;
+            overflow: hidden; border: 1px solid var(--border); position: relative;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+        .notice-bar {
+            background: rgba(102, 192, 244, 0.1); border-left: 3px solid var(--accent);
+            padding: 10px 14px; font-size: 12px; color: var(--text-main); border-radius: 2px;
+        }
+
+        /* Panic Docs Overlay */
+        #panic-overlay {
+            display: none; position: fixed; inset: 0; background: #f9fbfd; color: #202124;
+            z-index: 9999; flex-direction: column; font-family: Arial, sans-serif;
+        }
+        .docs-bar { background: #fff; border-bottom: 1px solid #dadce0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .docs-page {
+            background: #fff; width: 816px; max-width: 92%; min-height: 900px; margin: 24px auto;
+            padding: 60px 72px; box-shadow: 0 1px 3px rgba(60,64,67,0.3); line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">
+        <div class="logo" onclick="showStore('all')">STUDY<span>STEAM</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab active" id="tab-store" onclick="showStore('all')">Butik (24 Spel)</div>
+            <div class="nav-tab" id="tab-library" onclick="showStore('library')">Mitt Bibliotek (<span id="fav-count">0</span>)</div>
+        </div>
+    </div>
+    <div class="school-tools">
+        <select class="cloak-select" onchange="changeCloak(this.value)" title="Maskera fliken">
+            <option value="docs">Flik: Google Dokument</option>
+            <option value="classroom">Flik: Google Classroom</option>
+            <option value="drive">Flik: Google Drive</option>
+            <option value="wiki">Flik: Wikipedia</option>
+        </select>
+        <button class="btn btn-blue" onclick="openAboutBlank()">about:blank</button>
+        <button class="btn btn-panic" onclick="togglePanic(true)">Panik (ESC)</button>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Store / Library View -->
+    <div id="store-view">
+        <div class="toolbar">
+            <div class="categories">
+                <button class="cat-btn active" onclick="filterCategory('Alla', this)">Alla (24)</button>
+                <button class="cat-btn" onclick="filterCategory('Action & Runner', this)">Action & Runner</button>
+                <button class="cat-btn" onclick="filterCategory('Sport & Racing', this)">Sport & Racing</button>
+                <button class="cat-btn" onclick="filterCategory('Arkad & Skicklighet', this)">Arkad & Skicklighet</button>
+                <button class="cat-btn" onclick="filterCategory('Pussel & Strategi', this)">Pussel & Strategi</button>
+            </div>
+            <input type="text" class="search-input" id="search-input" placeholder="Sök bland 24 spel..." oninput="renderGames()">
+        </div>
+
+        <div class="section-title">
+            <span id="view-heading">UTVALDA & POPULÄRA SPEL</span>
+            <span id="game-counter">24 spel</span>
+        </div>
+
+        <div class="game-grid" id="game-grid"></div>
+    </div>
+
+    <!-- Game Player View -->
+    <div id="player-view">
+        <div class="player-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="btn btn-blue" onclick="closeGame()">⬅ Tillbaka</button>
+                <h3 id="current-game-title" style="color:#fff;">Spel</h3>
+            </div>
+            <div class="server-controls" id="server-buttons"></div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-blue" onclick="openDirectTab()">↗ Öppna i ny flik</button>
+                <button class="btn btn-blue" onclick="goFullscreen()">⛶ Helskärm</button>
+            </div>
+        </div>
+
+        <div class="notice-bar">
+            <b>Tips:</b> Om rutan nedan är grå eller blockerad, testa att byta till <b>Server 2 / Server 3</b> ovan eller klicka på <b>↗ Öppna i ny flik</b>. (Sidan bör ligga på Netlify eller GitHub Pages för att undvika lokala webbläsarspärrar).
+        </div>
+
+        <div class="iframe-wrapper">
+            <iframe id="game-frame" src="" allowfullscreen allow="autoplay; fullscreen; gamepad"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Panic Overlay (Google Docs Lookalike) -->
+<div id="panic-overlay">
+    <div class="docs-bar">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span style="background:#4285f4; color:#fff; padding:4px 8px; border-radius:4px; font-weight:bold;">≡</span>
+            <div>
+                <div style="font-size:16px; font-weight:500;">Anteckningar - Historia & Samhällskunskap</div>
+                <div style="font-size:12px; color:#5f6368;">Arkiv &nbsp; Redigera &nbsp; Visa &nbsp; Infoga &nbsp; Format &nbsp; Verktyg</div>
+            </div>
+        </div>
+        <button onclick="togglePanic(false)" style="background:#1a73e8; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:13px;">Återgå (ESC)</button>
+    </div>
+    <div class="docs-page" contenteditable="true">
+        <h1 style="font-size:22px; margin-bottom:14px;">Sammanfattning: Industriella revolutionen</h1>
+        <p style="margin-bottom:12px;">Den industriella revolutionen startade i Storbritannien under slutet av 1700-talet och förändrade samhället i grunden. Uppfinningar som ångmaskinen (James Watt) och Spinning Jenny effektiviserade produktionen av varor och textilier.</p>
+        <h2 style="font-size:17px; margin:16px 0 8px;">Viktiga konsekvenser</h2>
+        <ul style="margin-left:22px; margin-bottom:14px;">
+            <li>Urbanisering: Människor flyttade från landsbygden in till städerna för att arbeta i fabriker.</li>
+            <li>Utbyggnad av järnvägar och ångfartyg gjorde transporter snabbare och billigare.</li>
+            <li>Nya samhällsklasser växte fram, bland annat industriarbetare och fabriksägare.</li>
+        </ul>
+        <p style="color:#5f6368; font-size:13px;">(Klicka här för att skriva egna anteckningar... Tryck ESC för att gå tillbaka.)</p>
+    </div>
+</div>
+
+<script>
+const GAMES = [
+    {
+        id: "slope", title: "Slope", cat: "Action & Runner", icon: "🟢", bg: "linear-gradient(135deg, #134e5e, #71b280)",
+        servers: ["https://slope-game.github.io/file/", "https://kdata1.com/2020/05/slope/", "https://mathadventure1.github.io/slope/slope/index.html"]
+    },
+    {
+        id: "gdash", title: "Geometry Dash", cat: "Action & Runner", icon: "🟨", bg: "linear-gradient(135deg, #1e3c72, #2a5298)",
+        servers: ["https://geometrydash-lite.github.io/file/", "https://scratch.mit.edu/projects/105500895/embed", "https://ubg365.github.io/geometry-dash/"]
+    },
+    {
+        id: "subway", title: "Subway Surfers", cat: "Action & Runner", icon: "🏃", bg: "linear-gradient(135deg, #ff512f, #dd2476)",
+        servers: ["https://ubg77.github.io/updatefaqs/subway-surfers/", "https://szhong.4399.com/4399swf//upload_swf/ftp35/liuxinyu/20210324/jj01/index.html", "https://ubg365.github.io/subway-surfers/"]
+    },
+    {
+        id: "run3", title: "Run 3", cat: "Action & Runner", icon: "👽", bg: "linear-gradient(135deg, #0f2027, #2c5364)",
+        servers: ["https://lekug.github.io/tn6pS9dCf37xAhkJv/", "https://ubg365.github.io/run-3/", "https://player03.com/run/3/beta/"]
+    },
+    {
+        id: "tunnel", title: "Tunnel Rush", cat: "Action & Runner", icon: "🌀", bg: "linear-gradient(135deg, #4b134f, #c94b4b)",
+        servers: ["https://ubg365.github.io/tunnel-rush/", "https://tunnelrush.github.io/file/", "https://ubg77.github.io/fix/tunnel-rush/"]
+    },
+    {
+        id: "1v1lol", title: "1v1.LOL", cat: "Action & Runner", icon: "🎯", bg: "linear-gradient(135deg, #232526, #414345)",
+        servers: ["https://1v1.lol/", "https://ubg365.github.io/1v1-lol/", "https://justbuild.lol/"]
+    },
+    {
+        id: "stickman", title: "Stickman Hook", cat: "Action & Runner", icon: "🪝", bg: "linear-gradient(135deg, #f7971e, #ffd200)",
+        servers: ["https://ubg365.github.io/stickman-hook/", "https://stickmanhook.github.io/file/", "https://ubg77.github.io/fix/stickman-hook/"]
+    },
+    {
+        id: "motox3m", title: "Moto X3M", cat: "Sport & Racing", icon: "🏍️", bg: "linear-gradient(135deg, #cb2d3e, #ef473a)",
+        servers: ["https://ubg365.github.io/moto-x3m/", "https://motox3m.github.io/file/", "https://ubg77.github.io/updatefaqs/moto-x3m/"]
+    },
+    {
+        id: "drift", title: "Drift Hunters", cat: "Sport & Racing", icon: "🏎️", bg: "linear-gradient(135deg, #373b44, #4286f4)",
+        servers: ["https://ubg365.github.io/drift-hunters/", "https://drifthunters.github.io/file/", "https://ubg77.github.io/fix/drift-hunters/"]
+    },
+    {
+        id: "retrobowl", title: "Retro Bowl", cat: "Sport & Racing", icon: "🏈", bg: "linear-gradient(135deg, #11998e, #38ef7d)",
+        servers: ["https://retrobowl-game.github.io/file/", "https://ubg365.github.io/retro-bowl/", "https://game316009.konggames.com/gamez/0031/6009/live/index.html"]
+    },
+    {
+        id: "basketball", title: "Basketball Stars", cat: "Sport & Racing", icon: "🏀", bg: "linear-gradient(135deg, #e65c00, #f9d423)",
+        servers: ["https://ubg365.github.io/basketball-stars/", "https://basketball-stars.github.io/file/", "https://ubg77.github.io/fix/basketball-stars/"]
+    },
+    {
+        id: "soccer", title: "Soccer Random", cat: "Sport & Racing", icon: "⚽", bg: "linear-gradient(135deg, #56ab2f, #a8e063)",
+        servers: ["https://ubg365.github.io/soccer-random/", "https://soccerrandom.github.io/file/"]
+    },
+    {
+        id: "snowrider", title: "Snow Rider 3D", cat: "Sport & Racing", icon: "🛷", bg: "linear-gradient(135deg, #2980b9, #6dd5fa)",
+        servers: ["https://snowrider3d.github.io/file/", "https://ubg365.github.io/snow-rider-3d/"]
+    },
+    {
+        id: "mcclassic", title: "Minecraft Classic", cat: "Pussel & Strategi", icon: "⛏️", bg: "linear-gradient(135deg, #3a6186, #89253e)",
+        servers: ["https://classic.minecraft.net/", "https://eaglercraft.com/mc/1.8.8/"]
+    },
+    {
+        id: "bitlife", title: "BitLife", cat: "Pussel & Strategi", icon: "👶", bg: "linear-gradient(135deg, #d31027, #ea384d)",
+        servers: ["https://ubg365.github.io/bitlife/", "https://bitlife-online.github.io/file/"]
+    },
+    {
+        id: "cookie", title: "Cookie Clicker", cat: "Pussel & Strategi", icon: "🍪", bg: "linear-gradient(135deg, #603813, #b29f94)",
+        servers: ["https://orteil.dashnet.org/cookieclicker/", "https://ubg365.github.io/cookie-clicker/"]
+    },
+    {
+        id: "2048", title: "2048 Original", cat: "Pussel & Strategi", icon: "🔢", bg: "linear-gradient(135deg, #c21500, #ffc500)",
+        servers: ["https://play2048.co/", "https://ubg365.github.io/2048/"]
+    },
+    {
+        id: "tetris", title: "Tetris", cat: "Pussel & Strategi", icon: "🧱", bg: "linear-gradient(135deg, #4e54c8, #8f94fb)",
+        servers: ["https://chvin.github.io/react-tetris/", "https://ubg365.github.io/tetris/"]
+    },
+    {
+        id: "paperio2", title: "Paper.io 2", cat: "Arkad & Skicklighet", icon: "🗺️", bg: "linear-gradient(135deg, #00b4db, #0083b0)",
+        servers: ["https://ubg365.github.io/paper-io-2/", "https://paper-io.com/"]
+    },
+    {
+        id: "holeio", title: "Hole.io", cat: "Arkad & Skicklighet", icon: "🕳️", bg: "linear-gradient(135deg, #141e30, #243b55)",
+        servers: ["https://ubg365.github.io/hole-io/", "https://hole-io.com/"]
+    },
+    {
+        id: "crossy", title: "Crossy Road", cat: "Arkad & Skicklighet", icon: "🐔", bg: "linear-gradient(135deg, #43cea2, #185a9d)",
+        servers: ["https://ubg365.github.io/crossy-road/", "https://crossyroad.github.io/file/"]
+    },
+    {
+        id: "flappy", title: "Flappy Bird", cat: "Arkad & Skicklighet", icon: "🐦", bg: "linear-gradient(135deg, #56ccf2, #2f80ed)",
+        servers: ["https://flappybird.io/", "https://ubg365.github.io/flappy-bird/"]
+    },
+    {
+        id: "fruitninja", title: "Fruit Ninja", cat: "Arkad & Skicklighet", icon: "🍉", bg: "linear-gradient(135deg, #8e2de2, #4a00e0)",
+        servers: ["https://ubg365.github.io/fruit-ninja/", "https://fruitninja.github.io/file/"]
+    },
+    {
+        id: "dino", title: "Chrome Dino 3D", cat: "Arkad & Skicklighet", icon: "🦖", bg: "linear-gradient(135deg, #485563, #29323c)",
+        servers: ["https://chromedino.com/", "https://ubg365.github.io/dino-game/"]
+    }
+];
+
+let currentCategory = "Alla";
+let viewMode = "all";
+let favorites = JSON.parse(localStorage.getItem("studysteam_favs") || "[]");
+let activeGame = null;
+let activeUrl = "";
+
+function updateFavCount() {
+    document.getElementById("fav-count").innerText = favorites.length;
+}
+
+function toggleFav(e, id) {
+    e.stopPropagation();
+    if (favorites.includes(id)) {
+        favorites = favorites.filter(f => f !== id);
+    } else {
+        favorites.push(id);
+    }
+    localStorage.setItem("studysteam_favs", JSON.stringify(favorites));
+    updateFavCount();
+    renderGames();
+}
+
+function showStore(mode) {
+    viewMode = mode;
+    document.getElementById("store-view").style.display = "block";
+    document.getElementById("player-view").style.display = "none";
+    document.getElementById("game-frame").src = "";
+
+    document.getElementById("tab-store").classList.toggle("active", mode === "all");
+    document.getElementById("tab-library").classList.toggle("active", mode === "library");
+    document.getElementById("view-heading").innerText = mode === "library" ? "MITT BIBLIOTEK (SPARADE FAVORITER)" : "UTVALDA & POPULÄRA SPEL";
+    renderGames();
+}
+
+function filterCategory(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderGames();
+}
+
+function renderGames() {
+    const query = document.getElementById("search-input").value.toLowerCase();
+    const grid = document.getElementById("game-grid");
+    grid.innerHTML = "";
+
+    const filtered = GAMES.filter(g => {
+        const matchesMode = viewMode === "all" || favorites.includes(g.id);
+        const matchesCat = currentCategory === "Alla" || g.cat === currentCategory;
+        const matchesQuery = g.title.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query);
+        return matchesMode && matchesCat && matchesQuery;
+    });
+
+    document.getElementById("game-counter").innerText = `${filtered.length} spel`;
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<p style="color:#8f98a0; grid-column:1/-1; padding:30px; text-align:center;">Inga spel hittades. Klicka på stjärnan (★) på ett spel för att lägga till det i ditt bibliotek.</p>`;
+        return;
+    }
+
+    filtered.forEach(game => {
+        const isFav = favorites.includes(game.id);
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.onclick = () => launchGame(game);
+        card.innerHTML = `
+            <div class="card-banner" style="background:${game.bg}">
+                <span>${game.icon}</span>
+                <button class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${game.id}')" title="Spara i bibliotek">★</button>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="card-title">${game.title}</div>
+                    <div class="card-tag">${game.cat}</div>
+                </div>
+                <div class="card-footer">
+                    <span class="server-count">${game.servers.length} servrar</span>
+                    <span class="play-badge">SPELA</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function launchGame(game) {
+    activeGame = game;
+    document.getElementById("store-view").style.display = "none";
+    document.getElementById("player-view").style.display = "flex";
+    document.getElementById("current-game-title").innerText = `${game.icon} ${game.title}`;
+
+    const srvContainer = document.getElementById("server-buttons");
+    srvContainer.innerHTML = "";
+    game.servers.forEach((url, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "srv-btn" + (idx === 0 ? " active" : "");
+        btn.innerText = `Server ${idx + 1}`;
+        btn.onclick = () => selectServer(url, btn);
+        srvContainer.appendChild(btn);
+    });
+
+    selectServer(game.servers[0], srvContainer.firstChild);
+}
+
+function selectServer(url, btnEl) {
+    activeUrl = url;
+    document.querySelectorAll(".srv-btn").forEach(b => b.classList.remove("active"));
+    if (btnEl) btnEl.classList.add("active");
+    document.getElementById("game-frame").src = url;
+}
+
+function closeGame() {
+    document.getElementById("game-frame").src = "";
+    document.getElementById("player-view").style.display = "none";
+    document.getElementById("store-view").style.display = "block";
+}
+
+function openDirectTab() {
+    if (activeUrl) window.open(activeUrl, "_blank");
+}
+
+function goFullscreen() {
+    const iframe = document.getElementById("game-frame");
+    if (iframe.requestFullscreen) iframe.requestFullscreen();
+}
+
+function changeCloak(type) {
+    const titleEl = document.getElementById("page-title");
+    const iconEl = document.getElementById("page-icon");
+    const presets = {
+        docs: { t: "Namnlöst dokument - Google Dokument", i: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" },
+        classroom: { t: "Hem - Classroom", i: "https://ssl.gstatic.com/classroom/favicon.png" },
+        drive: { t: "Min enhet - Google Drive", i: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" },
+        wiki: { t: "Industriella revolutionen – Wikipedia", i: "https://sv.wikipedia.org/static/favicon/wikipedia.ico" }
+    };
+    titleEl.innerText = presets[type].t;
+    iconEl.href = presets[type].i;
+}
+
+function openAboutBlank() {
+    const win = window.open("about:blank", "_blank");
+    if (!win) {
+        alert("Tillåt popup-fönster i webbläsaren för att öppna i about:blank!");
+        return;
+    }
+    win.document.open();
+    win.document.write(document.documentElement.outerHTML);
+    win.document.close();
+    window.location.replace("https://classroom.google.com");
+}
+
+let panicActive = false;
+function togglePanic(state) {
+    panicActive = state !== undefined ? state : !panicActive;
+    document.getElementById("panic-overlay").style.display = panicActive ? "flex" : "none";
+}
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") togglePanic();
+});
+
+updateFavCount();
+renderGames();
+</script>
+</body>
+</html>
